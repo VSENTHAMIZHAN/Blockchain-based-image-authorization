@@ -1,4 +1,4 @@
-# This is the updated backend.py with improvements
+# this is the backend that helps us in verifing the image
 
 from flask import Flask, request, jsonify
 from web3 import Web3
@@ -10,10 +10,10 @@ import os
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
-# Connect to local blockchain
+# blockchain connection is made
 web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 
-# Load contract ABI
+# Abi loading
 with open('ImageAuthABI.json', 'r') as f:
     abi = json.load(f)
 
@@ -23,7 +23,7 @@ contract = web3.eth.contract(address=contract_address, abi=abi)
 sender_address = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 private_key = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
 
-# Setup local DB for storing image metadata
+# local DB setup
 DB_PATH = 'metadata.db'
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
@@ -44,7 +44,7 @@ def upload_image():
         image_bytes = file.read()
         image_hash = hashlib.sha256(image_bytes).hexdigest()
 
-        # Check if hash already exists in DB
+        
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM images WHERE hash=?", (image_hash,))

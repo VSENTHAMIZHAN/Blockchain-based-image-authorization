@@ -12,7 +12,7 @@ contract ImageAuth {
 
     event ImageRegistered(string hash, uint256 timestamp, string metadata);
 
-    // Register image hash + metadata, only once
+    
     function registerImage(string memory _hash, string memory _metadata) public {
         require(bytes(images[_hash].hash).length == 0, "Image already registered");
 
@@ -25,7 +25,7 @@ contract ImageAuth {
         emit ImageRegistered(_hash, block.timestamp, _metadata);
     }
 
-    // Verify if an image is registered and return metadata + timestamp
+    
     function verifyImage(string memory _hash) public view returns (bool, uint256, string memory) {
         ImageData memory data = images[_hash];
         if (bytes(data.hash).length == 0) {

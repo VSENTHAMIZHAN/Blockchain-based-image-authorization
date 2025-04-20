@@ -23,10 +23,10 @@ function App() {
 
   const handleUpload = async () => {
     if (!file || !metadata) {
-      return alert('📢 Please select an image and enter metadata!');
+      return alert('Please select an image and enter metadata!');
     }
 
-    setStatusMessage('⏳ Uploading...');
+    setStatusMessage('Uploading...');
     const formData = new FormData();
     formData.append('image', file);
     formData.append('metadata', metadata);
@@ -36,9 +36,9 @@ function App() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResult(res.data);
-      setStatusMessage('✅ Upload Success');
+      setStatusMessage('Upload Success');
     } catch (err) {
-      setStatusMessage('❌ Upload Error');
+      setStatusMessage('Upload Error');
       alert(err.response?.data?.error || 'Upload failed');
       console.error('Upload error:', err);
     }
@@ -56,12 +56,12 @@ function App() {
 
       if (verifyRes.data.verified) {
         setVerificationData(verifyRes.data);
-        alert(`✅ Verified!\nMetadata: ${verifyRes.data.metadata}`);
+        alert(` Verified!\nMetadata: ${verifyRes.data.metadata}`);
       } else {
-        alert('❌ Image not found or tampered!');
+        alert('Image not found or tampered!');
       }
     } catch (err) {
-      alert('❌ Verification failed');
+      alert(' Verification failed');
       console.error('Verification error:', err);
     }
   };
@@ -91,7 +91,7 @@ function App() {
           fontSize: '28px',
           fontWeight: 'bold',
           marginBottom: '20px'
-        }}>🛡️ Blockchain Image Auth</h2>
+        }}>Blockchain Image Auth</h2>
 
         <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
         <br />
@@ -166,9 +166,9 @@ function App() {
             backgroundColor: '#e0ecff',
             borderRadius: '10px'
           }}>
-            <p><strong>🧾 Image Hash:</strong> {result.hash}</p>
-            <p><strong>📦 Status:</strong> {result.status}</p>
-            <p><strong>🔗 Transaction:</strong> {result.tx_hash}</p>
+            <p><strong>Image Hash:</strong> {result.hash}</p>
+            <p><strong>Status:</strong> {result.status}</p>
+            <p><strong>Transaction:</strong> {result.tx_hash}</p>
           </div>
         )}
 
@@ -181,9 +181,9 @@ function App() {
             padding: '10px'
           }}>
             <h4>🔍 Verification Details</h4>
-            <p><strong>✅ Verified:</strong> Yes</p>
-            <p><strong>📝 Metadata:</strong> {verificationData.metadata}</p>
-            <p><strong>🕒 Timestamp:</strong> {new Date(verificationData.timestamp * 1000).toLocaleString()}</p>
+            <p><strong>Verified:</strong> Yes</p>
+            <p><strong>Metadata:</strong> {verificationData.metadata}</p>
+            <p><strong>Timestamp:</strong> {new Date(verificationData.timestamp * 1000).toLocaleString()}</p>
           </div>
         )}
       </div>
