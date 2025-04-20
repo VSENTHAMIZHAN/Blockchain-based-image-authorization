@@ -67,52 +67,126 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h2>🛡️ Blockchain Image Auth</h2>
+    <div style={{
+      fontFamily: 'Poppins, sans-serif',
+      background: '#f0f8ff',
+      minHeight: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '40px'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '600px',
+        background: '#fff',
+        borderRadius: '16px',
+        padding: '30px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+        textAlign: 'center',
+        border: '2px solid #1e3a8a'
+      }}>
+        <h2 style={{
+          color: '#1e3a8a',
+          fontSize: '28px',
+          fontWeight: 'bold',
+          marginBottom: '20px'
+        }}>🛡️ Blockchain Image Auth</h2>
 
-      <input type="file" onChange={handleFileChange} />
-      <br />
-      {imagePreview && (
-        <img
-          src={imagePreview}
-          alt="Preview"
-          style={{ marginTop: '10px', maxWidth: '300px', border: '1px solid #ccc' }}
+        <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
+        <br />
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            style={{
+              marginTop: '10px',
+              maxWidth: '100%',
+              border: '2px solid #1e3a8a',
+              borderRadius: '8px'
+            }}
+          />
+        )}
+        <br />
+        <input
+          type="text"
+          placeholder="Enter Metadata"
+          value={metadata}
+          onChange={handleMetadataChange}
+          style={{
+            marginTop: '15px',
+            padding: '10px',
+            width: '100%',
+            borderRadius: '8px',
+            border: '1px solid #ccc',
+            fontSize: '14px'
+          }}
         />
-      )}
-      <br />
-      <input
-        type="text"
-        placeholder="Enter Metadata"
-        value={metadata}
-        onChange={handleMetadataChange}
-        style={{ marginTop: '10px', padding: '5px', width: '300px' }}
-      />
-      <br />
-      <button onClick={handleUpload} style={{ marginTop: '10px', marginRight: '10px' }}>
-        Upload
-      </button>
-      <button onClick={handleVerify} disabled={!result}>
-        Verify Image
-      </button>
+        <br />
+        <button
+          onClick={handleUpload}
+          style={{
+            marginTop: '15px',
+            marginRight: '10px',
+            padding: '10px 20px',
+            background: '#1e3a8a',
+            color: '#ffea00',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          Upload
+        </button>
+        <button
+          onClick={handleVerify}
+          disabled={!result}
+          style={{
+            marginTop: '15px',
+            padding: '10px 20px',
+            background: '#ffea00',
+            color: '#1e3a8a',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          Verify Image
+        </button>
 
-      {statusMessage && <p style={{ marginTop: '10px' }}>Status: {statusMessage}</p>}
+        {statusMessage && <p style={{ marginTop: '15px', fontWeight: 'bold' }}>{statusMessage}</p>}
 
-      {result && (
-        <div style={{ marginTop: '15px' }}>
-          <p><strong>Image Hash:</strong> {result.hash}</p>
-          <p><strong>Blockchain Status:</strong> {result.status}</p>
-          <p><strong>Transaction Hash:</strong> {result.tx_hash}</p>
-        </div>
-      )}
+        {result && (
+          <div style={{
+            marginTop: '20px',
+            textAlign: 'left',
+            padding: '10px',
+            backgroundColor: '#e0ecff',
+            borderRadius: '10px'
+          }}>
+            <p><strong>🧾 Image Hash:</strong> {result.hash}</p>
+            <p><strong>📦 Status:</strong> {result.status}</p>
+            <p><strong>🔗 Transaction:</strong> {result.tx_hash}</p>
+          </div>
+        )}
 
-      {verificationData && (
-        <div style={{ marginTop: '20px', backgroundColor: '#f0f0f0', padding: '10px' }}>
-          <h4>🔎 Verification Details</h4>
-          <p><strong>Verified:</strong> ✅</p>
-          <p><strong>Metadata:</strong> {verificationData.metadata}</p>
-          <p><strong>Timestamp:</strong> {new Date(verificationData.timestamp * 1000).toLocaleString()}</p>
-        </div>
-      )}
+        {verificationData && (
+          <div style={{
+            marginTop: '20px',
+            textAlign: 'left',
+            backgroundColor: '#fff7db',
+            borderRadius: '10px',
+            padding: '10px'
+          }}>
+            <h4>🔍 Verification Details</h4>
+            <p><strong>✅ Verified:</strong> Yes</p>
+            <p><strong>📝 Metadata:</strong> {verificationData.metadata}</p>
+            <p><strong>🕒 Timestamp:</strong> {new Date(verificationData.timestamp * 1000).toLocaleString()}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
