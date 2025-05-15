@@ -8,6 +8,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [verificationData, setVerificationData] = useState(null);
+  const [morphDetails, setMorphDetails] = useState(null);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -35,8 +36,16 @@ function App() {
       const res = await axios.post('http://localhost:5000/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      
       setResult(res.data);
-      setStatusMessage('Upload Success');
+      setStatusMessage(res.data.is_morph ? 'Uploaded - Morph Detected!' : 'Upload Success');
+      
+      if (res.data.is_morph) {
+        setMorphDetails({
+          message: 'This image appears to be a modified version of an existing image',
+          severity: 'warning'
+        });
+      }
     } catch (err) {
       setStatusMessage('Upload Error');
       alert(err.response?.data?.error || 'Upload failed');
@@ -56,12 +65,13 @@ function App() {
 
       if (verifyRes.data.verified) {
         setVerificationData(verifyRes.data);
-        alert(` Verified!\nMetadata: ${verifyRes.data.metadata}`);
+        alert(`Verified!\nMetadata: ${verifyRes.data.metadata}\n` + 
+              (verifyRes.data.is_morph ? '⚠️ Warning: Potential morph detected' : '✅ Original image'));
       } else {
         alert('Image not found or tampered!');
       }
     } catch (err) {
-      alert(' Verification failed');
+      alert('Verification failed');
       console.error('Verification error:', err);
     }
   };
@@ -91,7 +101,21 @@ function App() {
           fontSize: '28px',
           fontWeight: 'bold',
           marginBottom: '20px'
-        }}>Blockchain Image Auth</h2>
+        }}>Blockchain Image Auth with Morph Detection</h2>
+
+        {morphDetails && (
+          <div style={{
+            padding: '10px',
+            background: morphDetails.severity === 'warning' ? '#fff3cd' : '#d4edda',
+            color: morphDetails.severity === 'warning' ? '#856404' : '#155724',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            border: `1px solid ${morphDetails.severity === 'warning' ? '#ffeeba' : '#c3e6cb'}`
+          }}>
+            <strong>{morphDetails.severity === 'warning' ? '⚠️ Warning: ' : 'ℹ️ '}</strong>
+            {morphDetails.message}
+          </div>
+        )}
 
         <input type="file" onChange={handleFileChange} style={{ marginBottom: '10px' }} />
         <br />
@@ -150,13 +174,23 @@ function App() {
             border: 'none',
             borderRadius: '8px',
             cursor: 'pointer',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            opacity: !result ? 0.5 : 1
           }}
         >
           Verify Image
         </button>
 
-        {statusMessage && <p style={{ marginTop: '15px', fontWeight: 'bold' }}>{statusMessage}</p>}
+        {statusMessage && (
+          <p style={{ 
+            marginTop: '15px', 
+            fontWeight: 'bold',
+            color: statusMessage.includes('Error') ? '#dc3545' : 
+                  statusMessage.includes('Morph') ? '#ffc107' : '#28a745'
+          }}>
+            {statusMessage}
+          </p>
+        )}
 
         {result && (
           <div style={{
@@ -169,6 +203,9 @@ function App() {
             <p><strong>Image Hash:</strong> {result.hash}</p>
             <p><strong>Status:</strong> {result.status}</p>
             <p><strong>Transaction:</strong> {result.tx_hash}</p>
+            {result.is_morph && (
+              <p style={{ color: '#dc3545', fontWeight: 'bold' }}>⚠️ Potential morph detected</p>
+            )}
           </div>
         )}
 
@@ -176,14 +213,20 @@ function App() {
           <div style={{
             marginTop: '20px',
             textAlign: 'left',
-            backgroundColor: '#fff7db',
+            backgroundColor: verificationData.is_morph ? '#fff3cd' : '#d4edda',
             borderRadius: '10px',
-            padding: '10px'
+            padding: '10px',
+            border: `1px solid ${verificationData.is_morph ? '#ffeeba' : '#c3e6cb'}`
           }}>
             <h4>🔍 Verification Details</h4>
-            <p><strong>Verified:</strong> Yes</p>
+            <p><strong>Verified:</strong> {verificationData.verified ? '✅ Yes' : '❌ No'}</p>
             <p><strong>Metadata:</strong> {verificationData.metadata}</p>
             <p><strong>Timestamp:</strong> {new Date(verificationData.timestamp * 1000).toLocaleString()}</p>
+            {verificationData.is_morph && (
+              <p style={{ color: '#856404', fontWeight: 'bold' }}>
+                ⚠️ Warning: This image appears to be a modified version of an existing image
+              </p>
+            )}
           </div>
         )}
       </div>
