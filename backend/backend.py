@@ -70,9 +70,13 @@ with open('ImageAuthABI.json', 'r') as f:
 contract_address = web3.to_checksum_address('0x5FbDB2315678afecb367f032d93F642f64180aa3')
 contract = web3.eth.contract(address=contract_address, abi=abi)
 
-sender_address = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-
 load_dotenv()  # Looks for .env in the same directory
+
+sender_address = os.getenv("SENDER_ADDRESS")
+if not sender_address:
+    raise EnvironmentError("[ERROR] SENDER_ADDRESS not found in .env file!")
+else:
+    print("[DEBUG] SENDER_ADDRESS loaded successfully:", sender_address)
 
 private_key = os.getenv("PRIVATE_KEY")
 
