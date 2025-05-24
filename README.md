@@ -58,7 +58,7 @@ npx hardhat run scripts/deploy.js --network localhost
 
 ### 4. Backend Setup
 
-Copy the contents of .env.example to backend/.env, or alternatively, select a sender address and its corresponding private key from the accounts provided by the Hardhat terminal.
+Copy the contents of backend/.env.example to backend/.env, or alternatively, select a sender address and its corresponding private key from the accounts provided by the Hardhat terminal.
 
 ```bash
 cd backend

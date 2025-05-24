@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  background: #f5f5f5;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.cta-button,
+.primary-button,
+.secondary-button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.primary-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+}
+
+.secondary-button {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.secondary-button:hover {
+  background-color: #545b62;
+}
+
+.hero {
+  background-color: #f8f9fa;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  text-align: center;
+  margin: 2rem 0 1rem;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem 0;
+  background: #ddd;
+}
+
+.footer-col h3 {
+  margin-bottom: 1rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.5rem;
+}
+
+.copyright {
+  text-align: center;
+  padding: 1rem 0;
+  background: #ccc;
+}
