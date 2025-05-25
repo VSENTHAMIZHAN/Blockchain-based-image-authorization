@@ -1,20 +1,27 @@
+
 .mvp-main {
-  min-height: 80vh;
-  background: #f7f9fc;
+  min-height: 100vh;
+  background-image: url("bg.jpg"); /* webpackIgnore: true */
+  background-repeat: repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px 0;
+  font-family: 'Poppins', sans-serif;
+  padding: 40px;
 }
+
+
 .mvp-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(22, 63, 140, 0.10);
-  padding: 36px 32px;
-  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 600px;
   width: 100%;
   margin: 0 auto;
+  border: 2px solid #1e3a8a;
 }
+
 .mvp-card h2 {
   color: #163f8c;
   margin-bottom: 24px;

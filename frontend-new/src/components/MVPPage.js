@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./MVPPage.css"; // Create this file for custom styles if needed
+import "./MVPPage.css";
 
 const MVPPage = () => {
   const [file, setFile] = useState(null);
@@ -11,7 +11,6 @@ const MVPPage = () => {
   const [verificationData, setVerificationData] = useState(null);
   const [morphDetails, setMorphDetails] = useState(null);
 
-  // Handle file input change
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
@@ -24,12 +23,10 @@ const MVPPage = () => {
     }
   };
 
-  // Handle metadata input change
   const handleMetadataChange = (event) => {
     setMetadata(event.target.value);
   };
 
-  // Handle upload
   const handleUpload = async () => {
     if (!file || !metadata) {
       alert("Please select an image and enter metadata!");
@@ -43,11 +40,13 @@ const MVPPage = () => {
     formData.append("metadata", metadata);
 
     try {
-      const response = await axios.post("/upload", formData, {
+      const response = await axios.post("http://localhost:5000/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
       setResult(response.data);
-      if (response.data.morphDetected) {
+
+      if (response.data.is_morph) {
         setStatusMessage("Uploaded - Morph Detected!");
         setMorphDetails({
           message: "Warning: Morphing detected in the uploaded image.",
@@ -59,30 +58,30 @@ const MVPPage = () => {
     } catch (error) {
       setStatusMessage("Upload Error");
       alert(
-        error?.response?.data?.message ||
-          "Upload failed. Please try again."
+        error?.response?.data?.error || "Upload failed. Please try again."
       );
       console.error(error);
     }
   };
 
-  // Handle verify
   const handleVerify = async () => {
-    if (!result || !result.imageHash) {
+    if (!result?.hash) {
       alert("No uploaded image hash to verify!");
       return;
     }
+
     try {
-      const response = await axios.post("/verify", {
-        imageHash: result.imageHash,
+      const response = await axios.post("http://localhost:5000/verify", {
+        hash: result.hash,
       });
+
       if (response.data.verified) {
         setVerificationData(response.data);
         alert(
           `Image Verified!\nMetadata: ${response.data.metadata}\nTimestamp: ${new Date(
-            response.data.timestamp
+            response.data.timestamp * 1000
           ).toLocaleString()}${
-            response.data.morphDetected
+            response.data.is_morph
               ? "\nWarning: Morphing detected in this image."
               : ""
           }`
@@ -167,16 +166,16 @@ const MVPPage = () => {
           <div className="details-card">
             <h4>Upload Details</h4>
             <p>
-              <strong>Image Hash:</strong> {result.imageHash}
+              <strong>Image Hash:</strong> {result.hash}
             </p>
             <p>
               <strong>Status:</strong>{" "}
-              {result.morphDetected ? "Morph Detected" : "Uploaded"}
+              {result.is_morph ? "Morph Detected" : "Uploaded"}
             </p>
             <p>
-              <strong>Transaction Hash:</strong> {result.txHash}
+              <strong>Transaction Hash:</strong> {result.tx_hash}
             </p>
-            {result.morphDetected && (
+            {result.is_morph && (
               <p className="morph-warning">
                 Warning: Morphing detected in this image.
               </p>
@@ -196,9 +195,9 @@ const MVPPage = () => {
             </p>
             <p>
               <strong>Timestamp:</strong>{" "}
-              {new Date(verificationData.timestamp).toLocaleString()}
+              {new Date(verificationData.timestamp * 1000).toLocaleString()}
             </p>
-            {verificationData.morphDetected && (
+            {verificationData.is_morph && (
               <p className="morph-warning">
                 Warning: Morphing detected in this image.
               </p>
