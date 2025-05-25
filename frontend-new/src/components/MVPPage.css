@@ -1,7 +1,7 @@
 
 .mvp-main {
   min-height: 100vh;
-  background-image: url("bg.jpg"); /* webpackIgnore: true */
+  background-image: url("bg2.jpg"); /* webpackIgnore: true */
   background-repeat: repeat;
   display: flex;
   align-items: center;
