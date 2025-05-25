@@ -5,10 +5,10 @@ const Footer = () => (
   <footer className="footer">
     <div className="footer-inner">
       <span>
-        &copy; {new Date().getFullYear()} VerifyLens &mdash; Blockchain-based Image Authorization
+        &copy; {new Date().getFullYear()} Verified Lens &mdash; Blockchain-based Image Authorization
       </span>
       <span>
-        Made for Hack2Bengal Hackathon
+        Made for HackVyuha'25 Hackathon
       </span>
     </div>
   </footer>

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./LandingPage.css"; // Create this file for custom styles if needed
+import "./LandingPage.css"; 
 import logo from "../assets/logo.svg";
+import platformImage from "../assets/verifylens-platform.png";
+
 
 const LandingPage = () => (
   <main>
@@ -11,11 +13,11 @@ const LandingPage = () => (
         <div className="hero-content">
           <h1>Bringing Trust Back to Digital Journalism</h1>
           <p>
-            VerifyLens uses blockchain and AI to verify press images, combat misinformation, and restore trust in digital media.
+            Verified Lens uses blockchain and AI to verify press images, combat misinformation, and restore trust in digital media.
           </p>
           <div className="cta-buttons">
             <Link to="/mvp" className="btn btn-primary">
-              Start Verifying
+              See It in Action
             </Link>
             <a href="#how-it-works" className="btn btn-secondary">
               How It Works
@@ -23,7 +25,7 @@ const LandingPage = () => (
           </div>
         </div>
         <div className="hero-image">
-          <img src={logo} alt="VerifyLens Logo" style={{ width: 120, height: 120 }} />
+          <img src={logo} alt="Verified Lens Logo" style={{ width: 120, height: 120 }} />
         </div>
       </div>
     </section>
@@ -64,7 +66,7 @@ const LandingPage = () => (
         <div className="solution-text">
           <h2>A Blockchain-Based Press Image Verification Platform</h2>
           <p>
-            VerifyLens leverages blockchain and AI to create a tamper-proof record of press images, their metadata, and authenticity.
+            Verified Lens leverages blockchain and AI to create a tamper-proof record of press images, their metadata, and authenticity.
           </p>
           <p>
             Journalists and media houses can upload images, generate cryptographic proofs, and store them securely on-chain and on IPFS.
@@ -75,8 +77,9 @@ const LandingPage = () => (
           <a href="#how-it-works" className="btn btn-secondary">Learn More</a>
         </div>
         <div className="solution-image">
-          <img src="https://placehold.co/500x350?text=VerifyLens+Platform" alt="VerifyLens Platform" />
+          <img src={platformImage} alt="Verified Lens Platform" />
         </div>
+
       </div>
     </section>
 
@@ -129,7 +132,7 @@ const LandingPage = () => (
               Impact: Undermined trust in the electoral process.
             </p>
             <div className="solution-box">
-              <h4>With VerifyLens:</h4>
+              <h4>With Verified Lens:</h4>
               <p>
                 The image’s origin and integrity could be instantly verified, preventing the spread of false claims.
               </p>
@@ -146,7 +149,7 @@ const LandingPage = () => (
               Impact: Delayed aid and increased confusion.
             </p>
             <div className="solution-box">
-              <h4>With VerifyLens:</h4>
+              <h4>With Verified Lens:</h4>
               <p>
                 Only verified images would be trusted, ensuring accurate information during crises.
               </p>
@@ -163,7 +166,7 @@ const LandingPage = () => (
               Impact: Spread of propaganda and misinformation.
             </p>
             <div className="solution-box">
-              <h4>With VerifyLens:</h4>
+              <h4>With Verified Lens:</h4>
               <p>
                 Blockchain-backed verification would expose AI fakes and protect journalistic integrity.
               </p>

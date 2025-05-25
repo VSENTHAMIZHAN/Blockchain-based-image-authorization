@@ -9,8 +9,8 @@ const Header = () => {
     <header className="header-container">
       <div className="header-inner">
         <Link to="/" className="logo">
-          <img src={logo} alt="VerifyLens Logo" width={40} height={40} />
-          <span className="logo-text">VerifyLens</span>
+          <img src={logo} alt="Verified Lens Logo" width={40} height={40} />
+          <span className="logo-text">Verified Lens</span>
         </Link>
         <nav>
           <ul className="nav-list">

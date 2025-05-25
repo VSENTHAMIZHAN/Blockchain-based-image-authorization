@@ -36,13 +36,17 @@
   text-decoration: none;
   transition: background 0.2s;
 }
+
+
 .btn-primary {
-  background: #fff;
-  color: #163f8c;
+  background: #e3eaff !important;
+  color: #2856a7 !important;
+  border: 2px solid #fff;
 }
 .btn-primary:hover {
-  background: #e3eaff;
+  background: #2856a7;
 }
+
 .btn-secondary {
   background: transparent;
   color: #fff;
@@ -51,6 +55,7 @@
 .btn-secondary:hover {
   background: #2856a7;
 }
+
 .hero-image img {
   background: #163f8c;
   border-radius: 50%;
