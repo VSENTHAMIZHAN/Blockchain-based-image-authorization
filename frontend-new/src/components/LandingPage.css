@@ -93,7 +93,7 @@
   text-align: center;
 }
 .problem-card span {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   margin-bottom: 10px;
   display: block;
 }
@@ -125,12 +125,14 @@
 }
 
 .steps {
+  /* font-size: 1.3rem; */
   display: flex;
   gap: 24px;
   margin-top: 32px;
   flex-wrap: wrap;
 }
 .step {
+  /* font-size: 1.3rem; */
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(22, 63, 140, 0.07);
@@ -139,6 +141,10 @@
   min-width: 180px;
   text-align: center;
 }
+.step span[role="img"] {
+  font-size: 2rem; /* Adjust size */
+}
+
 .step-number {
   background: #163f8c;
   color: #fff;
