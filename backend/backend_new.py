@@ -11,18 +11,25 @@ from PIL import Image
 import numpy as np
 from dotenv import load_dotenv
 from sklearn.metrics.pairwise import cosine_similarity
-
-
+from keras.models import load_model
+from pathlib import Path
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
+# Load ML model
+MODEL_PATH = Path(__file__).parent / "morph_detector_model.keras"
+print("[DEBUG] Loading deep learning morph detection model...")
+model = load_model(MODEL_PATH)
+print("[DEBUG] Model loaded successfully.")
+
 # Class that detects morphing. 
 
+# --- Morph Detection Class ---
 class MorphDetector:
     def __init__(self):
-        self.phash_threshold = 8  # more strict
-        self.orb_similarity_threshold = 0.85  # cosine similarity
+        self.phash_threshold = 8
+        self.orb_similarity_threshold = 0.85
 
     def preprocess_image(self, image_path):
         img = cv2.imread(image_path)
@@ -31,7 +38,6 @@ class MorphDetector:
         img = cv2.resize(img, (256, 256))
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         return gray
-    
     # phash feature resize --> greyscale --> DCT --> Top left 8x8 block of DCT --> Average DCT Coefficients --> Binary Hash
     # --> Output 64 bit --> Similarity check
     def get_phash(self, image_path):
@@ -46,7 +52,7 @@ class MorphDetector:
         orb = cv2.ORB_create()
         kp, des = orb.detectAndCompute(img, None)
         return des
-    
+
     # ORB feature
 
     def orb_cosine_similarity(self, des1, des2):
@@ -59,7 +65,7 @@ class MorphDetector:
         except:
             return 0
 
-    def is_morph(self, new_img_path, existing_phash, existing_des):
+    def is_morph_by_phash_orb(self, new_img_path, existing_phash, existing_des):
         new_phash = self.get_phash(new_img_path)
         phash_diff = new_phash - existing_phash
         if phash_diff < self.phash_threshold:
@@ -69,32 +75,39 @@ class MorphDetector:
             return similarity > self.orb_similarity_threshold
         return False
 
+    def predict_by_model(self, image_path):
+        try:
+            img = cv2.imread(image_path)
+            img = cv2.resize(img, (224, 224))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = img / 255.0
+            img = np.expand_dims(img, axis=0)
+            prediction = model.predict(img)
+            class_label = "Morphed" if prediction[0][0] < 0.5 else "Real"
+            confidence = prediction[0][0] if class_label == "Real" else 1 - prediction[0][0]
+            print(f"[DEBUG] Model prediction: {class_label} ({confidence:.2f})")
+            return class_label == "Morphed", confidence
+        except Exception as e:
+            print("[ERROR] Model prediction failed:", str(e))
+            return False, 0.0
+
 morph_detector = MorphDetector()
 
+# --- Blockchain + DB Initialization ---
 web3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 with open('ImageAuthABI.json', 'r') as f:
     abi = json.load(f)
 contract_address = web3.to_checksum_address('0x5FbDB2315678afecb367f032d93F642f64180aa3')
 contract = web3.eth.contract(address=contract_address, abi=abi)
 
-load_dotenv()  # Looks for .env in the same directory
-
+load_dotenv()
 sender_address = os.getenv("SENDER_ADDRESS")
-if not sender_address:
-    raise EnvironmentError("[ERROR] SENDER_ADDRESS not found in .env file!")
-else:
-    print("[DEBUG] SENDER_ADDRESS loaded successfully:", sender_address)
-
 private_key = os.getenv("PRIVATE_KEY")
 
-if not private_key:
-    raise EnvironmentError("[ERROR] PRIVATE_KEY not found in .env file!")
-else:
-    print("[DEBUG] PRIVATE_KEY loaded successfully")
-
-
-DB_PATH = 'metadata.db'
+if not sender_address or not private_key:
+    raise EnvironmentError("SENDER_ADDRESS or PRIVATE_KEY not set in .env")
 # Database schema: 
+DB_PATH = 'metadata.db'
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute("DROP TABLE IF EXISTS images")
@@ -119,6 +132,7 @@ def save_temp_file(file):
     return temp_path
 
 # Image gets upload here 
+# --- Upload Route ---
 @app.route('/upload', methods=['POST'])
 def upload_image():
     try:
@@ -137,6 +151,7 @@ def upload_image():
         orb_features = morph_detector.get_orb_features(temp_path)
 
         is_morph = False
+
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT hash FROM images WHERE hash=?", (image_hash,))
@@ -144,21 +159,26 @@ def upload_image():
                 os.remove(temp_path)
                 return jsonify({'error': 'Image already registered'}), 400
 
+            # Compare with existing images
             cursor.execute("SELECT phash, orb_features FROM images")
             for existing_phash_str, existing_orb_blob in cursor.fetchall():
                 existing_phash = imagehash.hex_to_hash(existing_phash_str)
                 existing_des = pickle.loads(existing_orb_blob) if existing_orb_blob else None
 
-                if morph_detector.is_morph(temp_path, existing_phash, existing_des):
+                if morph_detector.is_morph_by_phash_orb(temp_path, existing_phash, existing_des):
                     is_morph = True
                     break
+
+        # Deep learning model prediction
+        model_says_morph, confidence = morph_detector.predict_by_model(temp_path)
+        is_morph = is_morph or model_says_morph
 
         nonce = web3.eth.get_transaction_count(sender_address)
         txn = contract.functions.registerImage(
             image_hash,
             metadata,
             str(phash),
-            str(orb_features.mean()) if orb_features is not None else ""
+            str(float(orb_features.mean())) if orb_features is not None else ""
         ).build_transaction({
             'from': sender_address,
             'nonce': nonce,
@@ -173,8 +193,8 @@ def upload_image():
         with sqlite3.connect(DB_PATH) as conn:
             conn.execute(
                 "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (image_hash, metadata, receipt['blockNumber'], 
-                 tx_hash.hex(), str(phash), 
+                (image_hash, metadata, receipt['blockNumber'],
+                 tx_hash.hex(), str(phash),
                  pickle.dumps(orb_features) if orb_features is not None else None,
                  is_morph)
             )
@@ -187,14 +207,15 @@ def upload_image():
             'status': 'registered',
             'metadata': metadata,
             'is_morph': is_morph,
-            'message': 'Potential morph detected' if is_morph else 'New image registered'
+            'message': 'Potential morph detected' if is_morph else 'New image registered',
+            'model_confidence': float(confidence)  # <-- convert to native float
         })
 
     except Exception as e:
         print("Upload failed:", str(e))
         return jsonify({'error': str(e)}), 500
 
-# Verify Image
+# --- Verify Route ---
 @app.route('/verify', methods=['POST'])
 def verify_image():
     try:
@@ -222,4 +243,4 @@ def verify_image():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

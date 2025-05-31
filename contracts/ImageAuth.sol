@@ -6,16 +6,17 @@ contract ImageAuth {
         string hash;
         uint256 timestamp;
         string metadata;
-        string phash;       // Perceptual hash
-        string features;    // CNN features (or IPFS hash)
+        string phash;    // Variable to store perceptual hash
+        string features;  // Variable to store features of image
         bool isMorph;
     }
 
     mapping(string => ImageData) private images;
-    string[] public imageHashes;  // Track all registered hashes
+    string[] public imageHashes;  
 
     event ImageRegistered(string hash, uint256 timestamp, string metadata, bool isMorph);
 
+    // Function to register an image with its hash, metadata, perceptual hash, and features
     function registerImage(
         string memory _hash,
         string memory _metadata,
@@ -26,17 +27,16 @@ contract ImageAuth {
 
         bool isMorph = false;
         
-        // Check for potential morphs by comparing with existing images
+        
         for (uint i = 0; i < imageHashes.length; i++) {
             ImageData memory existing = images[imageHashes[i]];
             
-            // First check perceptual hash similarity
+            
             if (compareHashes(_phash, existing.phash)) {
                 isMorph = true;
                 break;
             }
-            
-            // Optional: Add more complex checks here using features
+
         }
 
         images[_hash] = ImageData({
@@ -51,7 +51,7 @@ contract ImageAuth {
         imageHashes.push(_hash);
         emit ImageRegistered(_hash, block.timestamp, _metadata, isMorph);
     }
-
+    // Function to verify if an image is registered and return its data
     function verifyImage(string memory _hash) public view returns (
         bool, 
         uint256, 
@@ -64,7 +64,7 @@ contract ImageAuth {
         }
         return (true, data.timestamp, data.metadata, data.isMorph);
     }
-
+    // Comparing hashes
     function compareHashes(string memory a, string memory b) internal pure returns (bool) {
         return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }

@@ -43,6 +43,7 @@ cd blockchain-image-auth
 ### 2. Start Local Blockchain
 
 ```bash
+npm install hardhat
 npx hardhat node
 ```
 

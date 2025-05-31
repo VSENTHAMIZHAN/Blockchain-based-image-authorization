@@ -29,7 +29,7 @@ const MVPPage = () => {
 
   const handleUpload = async () => {
     if (!file || !metadata) {
-      alert("Please select an image and enter metadata!");
+      alert("Please select an image and enter information of image!");
       return;
     }
     setStatusMessage("Uploading...");
@@ -47,7 +47,7 @@ const MVPPage = () => {
       setResult(response.data);
 
       if (response.data.is_morph) {
-        setStatusMessage("Uploaded - Morph Detected!");
+        setStatusMessage("Morph Detected!");
         setMorphDetails({
           message: "Warning: Morphing detected in the uploaded image.",
           severity: "high",
@@ -78,7 +78,7 @@ const MVPPage = () => {
       if (response.data.verified) {
         setVerificationData(response.data);
         alert(
-          `Image Verified!\nMetadata: ${response.data.metadata}\nTimestamp: ${new Date(
+          `Image Verified!\nInformation of Image: ${response.data.metadata}\nTimestamp: ${new Date(
             response.data.timestamp * 1000
           ).toLocaleString()}${
             response.data.is_morph
@@ -125,12 +125,12 @@ const MVPPage = () => {
 
         <div className="form-group">
           <label>
-            Metadata:
+            Information of Image:
             <input
               type="text"
               value={metadata}
               onChange={handleMetadataChange}
-              placeholder="Enter metadata (e.g., location, description)"
+              placeholder="Enter information of image (e.g., location, description)"
             />
           </label>
         </div>
@@ -191,7 +191,7 @@ const MVPPage = () => {
               {verificationData.verified ? "Verified" : "Not Verified"}
             </p>
             <p>
-              <strong>Metadata:</strong> {verificationData.metadata}
+              <strong>Information of Image:</strong> {verificationData.metadata}
             </p>
             <p>
               <strong>Timestamp:</strong>{" "}
