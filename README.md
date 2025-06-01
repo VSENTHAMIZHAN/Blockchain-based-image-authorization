@@ -108,8 +108,8 @@ You can access your website from your browser at http://127.0.0.1:3000
 
 ## Author
 #### HEISENBERG Team
-Senthamizhan
-Vijay Ragav R
-Salai saidhanyan
-Risha Shri
+- Senthamizhan
+- Vijay Ragav R
+- Salai saidhanyan
+- Risha Shri
 
