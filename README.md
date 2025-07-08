@@ -36,8 +36,8 @@ A decentralized image verification platform that uses blockchain to store and va
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/blockchain-image-auth.git
-cd blockchain-image-auth
+git clone https://github.com/VSENTHAMIZHAN/Blockchain-based-image-authorization.git
+cd Blockchain-based-image-authorization
 ```
 
 ### 2. Start Local Blockchain
@@ -108,8 +108,7 @@ You can access your website from your browser at http://127.0.0.1:3000
 
 ## Author
 #### HEISENBERG Team
-- Senthamizhan
-- Vijay Ragav R
-- Salai saidhanyan
-- Risha Shri
-
+Senthamizhan
+Vijay Ragav R
+Salai saidhanyan
+Risha Shri
